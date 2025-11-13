@@ -3,12 +3,6 @@
 ## 介绍
 一个可以用于抽奖的源码，用于公司年会，节日活动抽奖，支持自定义奖品中奖概率和奖品数量，支持设置单个账号抽奖次数，支持限制抽奖邮箱类型（如限制只能使用qq邮箱等），支持邮箱验证抽奖账户，支持手动开启卡密抽奖兑换码抽奖功能，支持自定义公告
 
-## 项目地址
-GitHub地址：https://github.com/smcloudcat/lottery GITEE地址：https://gitee.com/ximami/lottery
-
-## 演示站
-https://lottery.czzu.cn/
-
 ## 使用教程
 上传源码到服务器，设置php版本：php82(推荐，其他版本自己测试，不行就用82)，mysql版本随意吧，别太低，然后访问网站按照提示按照即可，默认后台地址：域名/admin.html 账号admin密码123456，如果忘记密码，可以去数据更改，加密规则md5两次
 
@@ -42,15 +36,7 @@ https://lottery.czzu.cn/
 8. 支持前台标题等后台自定义
 
 ## 演示图片
-![前台抽奖](https://img.czzu.cn/u/lottery/ujnCcAzj.png "前台抽奖")
-![前台查询](https://img.czzu.cn/u/lottery/SskqGqeC.png "前台查询")
-![后台登录](https://img.czzu.cn/u/lottery/b9N8LDzD.png "后台登录")
-![后台首页](https://img.czzu.cn/u/lottery/EcVBlkc8.png "后台首页")
-![后台奖品管理](https://img.czzu.cn/u/lottery/jZ4Nb1LX.png "后台奖品管理")
-![后台信息设置](https://img.czzu.cn/u/lottery/u6k51na3.png "后台信息设置")
+![前台抽奖](/1.png "前台抽奖")
+![前台查询](/2.png "前台抽奖")
+![前台商品](/3.png "前台抽奖")
 
-
-## 计划更新
-可能会丰富一下前台的内容吧，也许会写多几个模板，支持自己换模板，然后可能会写几个抽奖回调操作之类的吧。可以yuncat@email.lwcat.cn提交你的有趣意见哦~
-
-注意：充值余额，用户系统等的功能现在不会有，以后也不会有，这类的意见无需向我提出哦~能提出这种意见的你想干啥心里有点数，性本恶，但不要恶的这么离谱哈。
