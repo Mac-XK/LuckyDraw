@@ -1,0 +1,83 @@
+<?php
+header('Content-Type: application/json');
+$emailuse=1;
+$codeuse=1;
+$directoryPath = '../../';
+include("../../core/xiaocore.php");
+include("../../core/anti_spam.php");
+
+$secretKey = '';
+
+$code=getcode();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['act'] === 'send') {
+    $email = $_POST['email'] ?? '';
+    $cfResponse = $_POST['cf'] ?? '';
+
+    if (empty($email)) {
+        echo json_encode(['code' => 0, 'result' => '邮箱不能为空']);
+        exit;
+    }
+
+    // QQ邮箱格式验证
+    if (!preg_match('/^[0-9]+@qq\.com$/', $email)) {
+        echo json_encode(['code' => 0, 'result' => '请输入正确的QQ邮箱格式，如：123456789@qq.com（纯数字@qq.com）']);
+        exit;
+    }
+
+    // 防刷检查
+    $anti_spam_check = antiSpamCheck($conn, 'admin', $email, 'email');
+    if (!$anti_spam_check['allowed']) {
+        $error_msg = getAntiSpamMessage($anti_spam_check);
+        echo json_encode(['code' => 0, 'result' => $error_msg['message']]);
+        exit;
+    }
+    
+    $allowedDomains = ['qq.com'];
+    $emailDomain = substr(strrchr($email, "@"), 1);
+    if (!in_array($emailDomain, $allowedDomains)) {
+        echo json_encode(['code' => 0,'result' => '仅支持qq邮箱哦']);
+        exit;
+    }
+
+    if ($info['cfcode'] == 1){
+    $secretKey = $info['secretKey'];
+    if (empty($cfResponse)) {
+        echo json_encode(['code' => 0, 'result' => '验证码验证未完成，请完成验证后重试']);
+        exit;
+    }
+    if ($cfResponse==$_SESSION['cfResponse']) {
+        echo json_encode(['code' => 0, 'result' => '验证码已经发送到你邮箱，请查看邮箱']);
+        exit;
+    }
+    
+
+    $data = [
+        'secret' => $secretKey,
+        'response' => $cfResponse,
+        'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $verifyUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $cfResult = json_decode($response, true);
+    if (empty($cfResult['success'])) {
+        echo json_encode(['code' => 0, 'result' => '验证码验证失败，请重试']);
+        exit;
+    }
+    }
+
+    // 邮件发送逻辑
+    if (send($email, $info['title'], "你的验证码", "你的验证码：".$code."<br>该验证码仅用于活动抽奖，如果不是本人操作请无视", "你的验证码：".$code."该验证码仅用于活动抽奖，如果不是本人操作请无视", $info)) {
+        $_SESSION['emailcode'] = $code;
+        $_SESSION['cfResponse']=$cfResponse;
+        echo json_encode(['code' => 1, 'result' => '验证码发送成功']);
+    } else {
+        echo json_encode(['code' => 0, 'result' => '邮件服务未响应']);
+    }
+}
